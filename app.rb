@@ -1,11 +1,18 @@
+# frozen_string_literal: true
+
 require 'sinatra/base'
 require './lib/bookmark'
 
 class BookmarkManager < Sinatra::Base
-  get '/bookmarks' do
+  get '/' do
     @bookmarks = Bookmarks.new
     erb :bookmarks
   end
 
-  run! if app_file == $0
+  post '/' do
+    Bookmarks.new.add(params[:url])
+    redirect '/'
+  end
+
+  run! if app_file == $PROGRAM_NAME
 end
