@@ -1,35 +1,22 @@
-require 'pg'
+require 'query'
 
 class Bookmarks
-
   attr_reader :list
 
   def initialize
     @list = []
-    db_retrieve
+    db_retrieve_all
   end
-  
+
   def all
     @list.join('<br>')
   end
 
-  def db_retrieve
-    # @list.join('<br>')
-    begin
-      con = PG.connect :dbname => 'bookmark_manager', :user => 'peterallen'
-      rs = con.exec 'SELECT * FROM bookmarks;'
-      rs.each do |row| 
-       @list << row['url']
-      end
-      
-    rescue PG::Error => e
-      puts e.message 
-        
-    ensure
-      con.close if con
-      
+  def db_retrieve_all
+    results = Query.execute('SELECT * FROM bookmarks;')
+
+    results.each do |row|
+      @list << row['url']
     end
-
   end
-
 end
